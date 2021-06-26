@@ -1,15 +1,4 @@
-#include <cstdlib>
 #include <ctime>
-
-
-//#include <SFML/Graphics/RenderWindow.hpp>
-//#include <SFML/Window/VideoMode.hpp>
-//#include <SFML/Graphics/Texture.hpp>
-//#include <SFML/Graphics/Sprite.hpp>
-//#include <SFML/System/Clock.hpp>
-//#include <SFML/Window/Keyboard.hpp>
-//#include <SFML/Window/Event.hpp>
-
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
