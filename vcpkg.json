@@ -3,7 +3,14 @@
 	"version-string": "0.1.0-dev",
 	"homepage": "",
 	"description": "",
-	"dependencies": [
-        "sfml"        
+    "dependencies": [
+        "sfml",
+        "sdl2",
+        "sdl2-image",
+        "sdl2-ttf",
+        "sdl2-mixer",
+        "sdl2-net",
+        "sdl2-gfx",
+        "spdlog"
     ]
 }
