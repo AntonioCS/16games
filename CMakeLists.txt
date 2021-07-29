@@ -19,3 +19,5 @@ if (MSVC)
 endif()
 
 add_subdirectory(original)
+add_subdirectory(sdl2)
+
