@@ -1,5 +1,8 @@
 #include <ctime>
 #include <SFML/Graphics.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/msvc_sink.h>
+
 using namespace sf;
 
 const int M = 20;
@@ -43,6 +46,10 @@ bool check()
 
 int main()
 {
+
+    auto sink{ std::make_shared<spdlog::sinks::msvc_sink_mt>() };
+    auto logger{ std::make_shared<spdlog::logger>("msvc_logger", sink) };
+
     srand(time(nullptr));
 
     RenderWindow window(VideoMode(320, 480), "The Game!");
@@ -67,6 +74,7 @@ int main()
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
+
         clock.restart();
         timer += time;
 
@@ -169,7 +177,7 @@ int main()
 
         dx = 0;
         rotate = false;
-        delay = 0.3;
+        delay = 0.3f;
 
         /////////draw//////////
         window.clear(Color::White);
