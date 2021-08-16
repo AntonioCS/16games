@@ -23,14 +23,6 @@ function(sdl2_game targetName)
 
     target_include_directories(${targetName} PUBLIC ${GEPartialPathPath})
 
-    #target_sources(
-    #    ${targetName} PUBLIC
-    #    ${GEPartialPathPath}/GameEngine/Game.cpp
-    #    ${GEPartialPathPath}/GameEngine/Texture.cpp
-    #    ${GEPartialPathPath}/GameEngine/Clock.cpp
-    #    ${GEPartialPathPath}/GameEngine/UsesRenderer.cpp
-    #)
-    
     target_link_libraries(${targetName} PRIVATE SDL2::SDL2 SDL2::SDL2main)
     target_link_libraries(${targetName} PRIVATE SDL2::SDL2_image)
     target_link_libraries(${targetName} PRIVATE SDL2::SDL2_ttf)
@@ -54,7 +46,7 @@ endfunction()
 
 add_subdirectory("01 Tetris")
 add_subdirectory("02 Doodle Jump")
-#add_subdirectory("03 Arkanoid")
+add_subdirectory("03 Arkanoid")
 #add_subdirectory("04 Snake")
 #add_subdirectory("05 Minesweeper")
 #add_subdirectory("06 Fifteen-Puzzle")
