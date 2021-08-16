@@ -1,23 +1,20 @@
-//#include <SFML/Graphics.hpp>
-//#include <ctime>
-//using namespace sf;
-//
-//struct point
-//{
-//    int x, y;
-//};
-
 #include <SDL2/SDL.h>
 #include <GameEngine/Game.h>
 #include <GameEngine/Texture.h>
 #include <GameEngine/Clock.h>
 
 
+constexpr int windowWidth{ 400 };
+constexpr int windowHeight{ 533 };
+constexpr int totalPlatforms{ 10 };
+
+
 int main(int argv, char** argc)
 {
-    GameEngine::Game geGame{ "Doodle Game!", 400, 533 };
+    GameEngine::Game geGame{ "Doodle Game!", windowWidth, windowHeight };
 
-    geGame.isRendererVSYNC = true;
+    geGame.isRendererVSYNC = true; //limit framerate to 60
+    geGame.isCountingFrames = true;
 
     geGame.init();
 
@@ -27,12 +24,11 @@ int main(int argv, char** argc)
     txPlatform.loadFromFile("resources/images/platform.png");
     txDoodle.loadFromFile("resources/images/doodle.png");
 
-    SDL_Point plat[20];
+    SDL_Point plat[totalPlatforms];
 
-    for (int i = 0; i < 10; i++)
-    {
-        plat[i].x = GameEngine::Game::randomInt(0, 400); // rand() % 400;
-        plat[i].y = GameEngine::Game::randomInt(0, 533); //rand() % 533;
+    for (int i = 0; i < totalPlatforms; i++) {
+        plat[i].x = GameEngine::Game::randomInt(0, windowWidth);
+        plat[i].y = GameEngine::Game::randomInt(0, windowHeight);
     }
 
     int x = 100;
@@ -44,16 +40,18 @@ int main(int argv, char** argc)
     SDL_Event event;
     int framesCounted{ 0 };
 
-    GameEngine::Clock frameCoutner;
+    //GameEngine::Clock frameCoutner;
 
     while (isRunning)
     {
-        float avgFPS{ static_cast<float>(framesCounted) / frameCoutner.elapsedInSeconds() };
+     /*   float avgFPS{ static_cast<float>(framesCounted) / frameCoutner.elapsedInSeconds() };
         if (avgFPS > 2000000) {
             avgFPS = 0;
         }
 
-        SDL_Log("Frames per sec: %f", avgFPS);
+        SDL_Log("Frames per sec: %f", avgFPS);*/
+
+        SDL_Log("Frames per sec from game obj: %f", geGame.getAvgFPS());
 
         while (SDL_PollEvent(&event)) {
             switch (event.type)
@@ -69,29 +67,32 @@ int main(int argv, char** argc)
                     break;
                 }
                 break;
-            case SDL_KEYDOWN:
+            case SDL_KEYUP:
                 switch (event.key.keysym.sym) {
-                case SDLK_UP:
+                    case SDLK_ESCAPE:
+                        isRunning = false;
                     break;
+                    default:
+                        break;
+                }
+                break;
+            /*case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
                 case SDLK_LEFT:
                     x -= 3;
                     break;
                 case SDLK_RIGHT:
                     x += 3;
-                    break;     
+                    break;
                 default:
                     break;
-                }
+                }*/
             }
         }
 
-        //const Uint8* state = SDL_GetKeyboardState(nullptr);
-        //if (state[SDL_S])
-
-
-
-        //if (Keyboard::isKeyPressed(Keyboard::Right)) x += 3;
-        //if (Keyboard::isKeyPressed(Keyboard::Left)) x -= 3;
+        const Uint8* state = SDL_GetKeyboardState(nullptr);
+        if (state[SDL_SCANCODE_RIGHT]) x += 3;
+        if (state[SDL_SCANCODE_LEFT]) x -= 3;
 
         dy += 0.2f;
         y += static_cast<int>(dy);
@@ -99,17 +100,18 @@ int main(int argv, char** argc)
         if (y > 500) dy = -10;
 
         if (y < h) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < totalPlatforms; i++) {
                 y = h;
                 plat[i].y = plat[i].y - dy;
-                if (plat[i].y > 533) {
+                if (plat[i].y > windowHeight) {
                     plat[i].y = 0;
-                    plat[i].x = GameEngine::Game::randomInt(0, 400); //rand() % 400;
+                    plat[i].x = GameEngine::Game::randomInt(0, windowWidth); //rand() % 400;
                 }
             }
         }
 
-        for (int i = 0; i < 10; i++) {
+        //possible collision detection
+        for (int i = 0; i < totalPlatforms; i++) {
             if (
                 (x + 50 > plat[i].x) &&
                 (x + 20 < plat[i].x + 68) &&
@@ -119,10 +121,12 @@ int main(int argv, char** argc)
              )
                 dy = -10;
         }
+
+        //Clear screen with background image!!!
         txBackground.render();
         txDoodle.render(x, y);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < totalPlatforms; i++) {
             //tx.setPosition(plat[i].x, plat[i].y);
             //app.draw(sPlat);
             txPlatform.render(plat[i].x, plat[i].y);
