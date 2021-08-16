@@ -29,7 +29,7 @@ endfunction()
 
 add_subdirectory("01 Tetris")
 add_subdirectory("02 Doodle Jump")
-#add_subdirectory("03 Arkanoid")
+add_subdirectory("03 Arkanoid")
 #add_subdirectory("04 Snake")
 #add_subdirectory("05 Minesweeper")
 #add_subdirectory("06 Fifteen-Puzzle")
