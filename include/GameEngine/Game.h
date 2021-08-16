@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <SDL2/SDL.h>
+#include <GameEngine/Clock.h>
 
 namespace GameEngine
 {
@@ -28,24 +29,34 @@ namespace GameEngine
         bool isWindowInputGrabbed{ false };
         bool isWindowAllowHighdpi{ false };
 
+        bool isCountingFrames{ false };
+
     private:
         SDL_Window* m_window{};
         SDL_Renderer* m_renderer{};
 
-        //bool m_isRunning{ false };
+        Clock m_frameClock{};
+        float m_totalFrames{};
+        float m_avgFPS{};
 
         std::string m_title;
         int m_w{ 800 };
         int m_h{ 600 };
+
+        bool m_isRunning{ false };
     public:
         Game(std::string&& title, int w, int h);
         void init();
         ~Game();
         void clear(const Color&) const;
-        void updateScreen() const;
+        void updateScreen();
+        double getAvgFPS() const;
+        bool isRunning() const;
+
+        void pumpEvents();
+
         static int randomInt(int min, int max);
         static float randomFloat(float min, float max);
-
     private:
         [[nodiscard]] uint32_t createWindowFlags() const;
         [[nodiscard]] uint32_t createRendererFlags() const;

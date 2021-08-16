@@ -14,7 +14,7 @@ namespace GameEngine
         int m_height{};
     public:
         ~Texture();
-        bool loadFromFile(const std::string& path);
+        void loadFromFile(const std::string& path);
         void render(int x = 0, int y = 0, SDL_Rect* clip = nullptr) const;
     };
 }

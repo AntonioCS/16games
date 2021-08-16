@@ -27,7 +27,6 @@ namespace GameEngine {
             m_renderer = SDL_CreateRenderer(
                 m_window, -1,
                 createRendererFlags()
-                //SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
             );
 
             if (const int imgFlags{ IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF };
@@ -36,6 +35,12 @@ namespace GameEngine {
             }
 
             UsesRenderer::renderer = m_renderer;
+
+            if (isCountingFrames) {
+                m_frameClock.reset();
+            }
+
+            m_isRunning = true;
         }
         else {
             throw std::runtime_error{ "Unable to initialize SDL2: " + std::string{SDL_GetError()} };
@@ -66,9 +71,64 @@ namespace GameEngine {
         }
     }
 
-    void Game::updateScreen() const
-    {        
+    void Game::updateScreen()
+    {
+        if (isCountingFrames) {
+            m_avgFPS = m_totalFrames / m_frameClock.elapsedInSeconds();
+            if (m_avgFPS > 2000000) {
+                m_avgFPS = 0;
+            }
+
+            m_totalFrames++;
+        }
+
         SDL_RenderPresent(m_renderer);
+    }
+
+    double Game::getAvgFPS() const
+    {
+        return m_avgFPS;
+    }
+
+    bool Game::isRunning() const
+    {
+        return  m_isRunning;
+    }
+
+    namespace 
+    {
+        SDL_Event event;
+    }
+
+
+    //WIP - Add way to add events
+    void Game::pumpEvents()
+    {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type)
+            {
+            case SDL_WINDOWEVENT:
+                switch (event.window.event)
+                {
+                case SDL_WINDOWEVENT_CLOSE:   // exit game
+                    m_isRunning = false;
+                    break;
+
+                default:
+                    break;
+                }
+                break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                    m_isRunning = false;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            }
+        }
     }
 
     //https://stackoverflow.com/a/13445752/8715
